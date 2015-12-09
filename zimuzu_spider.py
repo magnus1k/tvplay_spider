@@ -7,6 +7,10 @@ import time
 import re
 # import xmlrpc.client
 import subprocess
+from config import load_config
+
+
+config_name = "zimuzu.conf"
 
 
 def sign(account, password):
@@ -47,19 +51,24 @@ def sign(account, password):
     # content = requests.get("http://www.zimuzu.tv/user/sign/dosign", headers=headers).json()
     # print("sign success! ") if content['data'] != False else ("signed! " if content['data'] == False else
     #                                                           "sign failed! " + str(content)), content['status']
-    res = requests.get("http://www.zimuzu.tv/resource/list/10733", headers=headers)
-    print(res.content)
-    soup = BeautifulSoup(res.content, 'html.parser')
-    alluri = ""
-    for one in soup.find_all('li', format='HR-HDTV'):
-        if int(one['season']) == 3:
-            link = one.find('a', href=re.compile('ed2k:'))
-            alluri = str(link['href'])
-            # with xmlrpc.client.ServerProxy("http://localhost:6800/rpc") as proxy:
-            #     val = proxy.aria2.addUri([str(link['href'])])
-            #     print(val)
-        # print (one['href'])
-    alluri = '"{}"'.format(alluri)
-    print(alluri)
-    subprocess.call(["C:\Program Files (x86)\Thunder Network\Thunder\Program\Thunder.exe", alluri],
-                    shell=True)
+
+    playlist = load_config(config_name)
+
+    for play in playlist:
+
+        res = requests.get(play["url"], headers=headers)
+        print(res.content)
+        soup = BeautifulSoup(res.content, 'html.parser')
+        alluri = ""
+        for one in soup.find_all('li', format='HR-HDTV'):
+            if (int(one['season']) == play['season'] and int(one['episode']) > play['episode']) or \
+                    (int(one['season']) > play['season'] and int(one['episode']) != 0):
+                link = one.find('a', href=re.compile('ed2k:'))
+                alluri += str(link['href']) + "\n"
+                # I have trouble to download magnet with aria2, I will try something else.
+                # with xmlrpc.client.ServerProxy("http://localhost:6800/rpc") as proxy:
+                #     val = proxy.aria2.addUri([str(link['href'])])
+                #     print(val)
+        print(alluri)
+        # subprocess.call(["C:\Program Files (x86)\Thunder Network\Thunder\Program\Thunder.exe", alluri],
+        #                 shell=True)
