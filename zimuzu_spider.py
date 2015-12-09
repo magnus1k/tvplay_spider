@@ -65,13 +65,15 @@ def sign(account, password):
             if (int(one['season']) == play['season'] and int(one['episode']) > play['episode']) or \
                     (int(one['season']) > play['season'] and int(one['episode']) != 0):
                 link = one.find('a', href=re.compile('ed2k:'))
-                # alluri += str(link['href']) + "\n"
+                alluri += str(link['href']) + "\n"
 
                 # I have trouble to download magnet with aria2, I will try something else.
                 # with xmlrpc.client.ServerProxy("http://localhost:6800/rpc") as proxy:
                 #     val = proxy.aria2.addUri([str(link['href'])])
                 #     print(val)
-                os.system('python2 C:\\Users\\Administrator\\Documents\\xunlei-lixian\\lixian_cli.py download --tool=a2 "{}"'.format(str(link['href'])))
+
+                # Too many times access Xunlei will cause "Verification code required"
+                # os.system('python2 C:\\Users\\Administrator\\Documents\\xunlei-lixian\\lixian_cli.py download --tool=a2 "{}"'.format(str(link['href'])))
                 print(str(link['href']))
         # subprocess.call(["C:\Program Files (x86)\Thunder Network\Thunder\Program\Thunder.exe", alluri],
         #                 shell=True)
