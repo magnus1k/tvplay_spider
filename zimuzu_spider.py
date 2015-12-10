@@ -107,7 +107,6 @@ def sign(account, password):
                 alluri += uri + "\n\r"
                 play['season'] = season
                 play['episode'] = episode
-                save_config(playlist, config_name)
 
     timenow = datetime.datetime.now().strftime("%Y-%m-%d")
     if not os.path.exists("zimuzu_txt"):
@@ -116,3 +115,4 @@ def sign(account, password):
     print(filename)
     with open(filename, 'a', encoding='utf-8') as file:
         file.write(alluri)
+        save_config(playlist, config_name)
