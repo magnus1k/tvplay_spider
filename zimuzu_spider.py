@@ -110,6 +110,8 @@ def sign(account, password):
                 save_config(playlist, config_name)
 
     timenow = datetime.datetime.now().strftime("%Y-%m-%d")
+    if not os.path.exists("zimuzu_txt"):
+        os.makedirs("zimuzu_txt")
     filename = os.path.join("zimuzu_txt", "zimuzu_{}.txt".format(timenow))
     print(filename)
     with open(filename, 'a', encoding='utf-8') as file:
