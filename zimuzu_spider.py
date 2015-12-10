@@ -57,7 +57,7 @@ def sign(account, password):
             season = int(one['season'])
             episode = int(one['episode'])
             if (season == play['season'] and episode > play['episode']) or \
-                    (season > play['season'] and episode != 0):
+                    (season > play['season'] and episode != 0 and season < 100):
                 link = one.find('a', href=re.compile('ed2k:'))
                 uri = str(link['href'])
                 if season not in seasons:
