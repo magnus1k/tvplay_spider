@@ -9,6 +9,7 @@ from config import load_config, save_config
 from collections import OrderedDict
 import datetime
 import os
+import time
 
 
 config_name = "zimuzu.conf"
@@ -43,20 +44,15 @@ def sign(account, password):
     CPS = 'yhd%2F'+str(int(time.time()))+";"
     Cookie = ' PHPSESSID='+session+'; '+CPS+(GINFO+GKEY)*3
     headers['Cookie'] = Cookie
-    # requests.get("http://www.zimuzu.tv/user/sign", headers=headers).content
-    # print('wait for 20 seconds...')
-    # time.sleep(20)
-    # content = requests.get("http://www.zimuzu.tv/user/sign/dosign", headers=headers).json()
-    # print("sign success! ") if content['data'] != False else ("signed! " if content['data'] == False else
-    #                                                           "sign failed! " + str(content)), content['status']
 
     playlist = load_config(config_name)
-    alluri = ""
     for play in playlist:
+        alluri = ""
         seasons = dict()
         res = requests.get(play["url"], headers=headers)
         # print(res.content)
         soup = BeautifulSoup(res.content, 'html.parser')
+
         for one in soup.find_all('li', format='HR-HDTV'):
             season = int(one['season'])
             episode = int(one['episode'])
@@ -67,52 +63,26 @@ def sign(account, password):
                 if season not in seasons:
                     seasons[season] = dict()
                 seasons[season][episode] = uri
-                # alluri += str(link['href']) + "\n"
-
-                # I have trouble to download magnet with aria2, I will try something else.
-                # with xmlrpc.client.ServerProxy("http://localhost:6800/rpc") as proxy:
-                #     val = proxy.aria2.addUri([str(link['href'])])
-                #     print(val)
-
-                # Too many times access Xunlei will cause "Verification code required"
-
-                # os.system('python2 E:\\xunlei-lixian\\lixian_cli.py download '
-                #           '--tool=aria2 --continue "{}"'.format(str(link['href'])))
         print("Got all episodes of {}".format(play['name']))
-        # os.system('C:\\Python27\\python.exe E:\\xunlei-lixian\\lixian_cli.py login')
         seasons = OrderedDict(sorted(seasons.items()))
+
         for season in seasons:
             seasons[season] = OrderedDict(sorted(seasons[season].items()))
+
         for season in seasons:
             for episode in seasons[season]:
-                # uri = seasons[season][episode]
-                # exit_code = -1
-                # retry_times = 0
-                # while exit_code != 0 and retry_times < 10000:
-                #     print("Start downloading {} season {} episode {}".format(play['name'], season, episode))
-                #     exit_code = os.system('C:\\Python27\\python.exe E:\\xunlei-lixian\\lixian_cli.py '
-                #                           'download --tool=aria2 --continue "{}"'.format(uri))
-                #     # exit_code = subprocess.call(['C:\\Python27\\python.exe', 'E:\\xunlei-lixian\\lixian_cli.py',
-                #     #                              'download', '--tool=aria2', '--continue', '"{}"'.format(uri)])
-                #     print(exit_code)
-                #     if exit_code != 0:
-                #         retry_times += 1
-                #         print("Something wrong. Wait one minute...")
-                #         sleep(60)
-                #         print("Start retry {}".format(retry_times))
-                #
-                #     else:
-                #         print("{} season {} episode {} downloaded".format(play['name'], season, episode))
                 uri = seasons[season][episode]
                 alluri += uri + "\n\r"
                 play['season'] = season
                 play['episode'] = episode
 
-    timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-    if not os.path.exists("zimuzu_txt"):
-        os.makedirs("zimuzu_txt")
-    filename = os.path.join("zimuzu_txt", "zimuzu_{}.txt".format(timenow))
-    print(filename)
-    with open(filename, 'a', encoding='utf-8') as file:
-        file.write(alluri)
-        save_config(playlist, config_name)
+        timenow = datetime.datetime.now().strftime("%Y-%m-%d")
+        if not os.path.exists("zimuzu_txt"):
+            os.makedirs("zimuzu_txt")
+        filename = os.path.join("zimuzu_txt", "zimuzu_{}.txt".format(timenow))
+        print(filename)
+        with open(filename, 'a', encoding='utf-8') as file:
+            file.write(alluri)
+            save_config(playlist, config_name)
+
+        time.sleep(10)
