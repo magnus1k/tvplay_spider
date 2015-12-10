@@ -166,6 +166,21 @@ if __name__ == "__main__":
     js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/288"
     js_dict['episode'] = 34
     file_dict.append(js_dict)
+
+    js_dict = dict()
+    js_dict['name'] = "海贼王"
+    js_dict['pattern'] = "(\\[ONE PIECE 海贼王\\]).*\\[第(?P<ep>\d+)话\\].*(\\[1080[pP]\\])"
+    js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/34"
+    js_dict['episode'] = 680
+    file_dict.append(js_dict)
+
+    js_dict = dict()
+    js_dict['name'] = "银魂"
+    js_dict['pattern'] = "(\\[银魂\\]).*\\[(?P<ep>\d+)\\].*(\\[1080[pP].*\\])"
+    js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/117"
+    js_dict['episode'] = 289
+    file_dict.append(js_dict)
+
     save_config(file_dict, "dmhy.conf")
     # js_dict = load_config("zimuzu.conf")
     # print(js_dict)
