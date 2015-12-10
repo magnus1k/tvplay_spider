@@ -21,14 +21,10 @@ def dmhy_find_url(play):
     findep = False
     seasons = dict()
 
-    url = play["url"]
-    pattern = play["pattern"]
-    episode = play["episode"]
-
     while not findep:
-        realurl = url + "/page/" + str(page)
+        realurl = play["url"] + "/page/" + str(page)
         res = requests.get(realurl, headers)
-        print("realurl:" + res.url)
+        # print("realurl:" + res.url)
         soup = BeautifulSoup(res.content, 'html.parser')
 
         lastpage = re.search("沒有可顯示資源", str(soup.text))
@@ -38,15 +34,15 @@ def dmhy_find_url(play):
         for tr in soup.find_all('tr'):
             for a in tr.find_all('a'):
                 if a.has_attr('target') and a['target'] == '_blank':
-                    match = re.search(pattern, str(a.text))
+                    match = re.search(play["pattern"], str(a.text))
                     if match:
                         ep = int(str(match.group('ep')).strip())
                         s = 1
-                        if ep == episode:
+                        if ep == play["episode"]:
                             findep = True
                             print("page:" + str(page))
-                        elif ep > episode:
-                            print("1080p:" + str(a.text).strip())
+                        elif ep > play["episode"]:
+                            # print("1080p:" + str(a.text).strip())
                             # print("ep:" + str(ep))
                             link = tr.find('a', href=re.compile('magnet:'))
                             uri = str(link['href'])
@@ -69,27 +65,29 @@ def dmhy_find_url(play):
             uri = seasons[s][ep]
             alluri += uri + "\n\r"
             # play['season'] = season
-            play['episode'] = episode
+            play['episode'] = ep
 
-    return alluri
+    return alluri, play
 
 
 def output_uri():
     playlist = load_config(config_name)
     alluri = ""
     for play in playlist:
-        alluri += dmhy_find_url(play)
+        thisuri, play = dmhy_find_url(play)
+        alluri += thisuri
         save_config(playlist, config_name)
-        sleep(15)
 
-    # print("alluri:\n" + alluri)
-    timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-    if not os.path.exists("dmhy_txt"):
-        os.makedirs("dmhy_txt")
-    filename = os.path.join("dmhy_txt", "zimuzu_{}.txt".format(timenow))
-    print(filename)
-    with open(filename, 'a', encoding='utf-8') as file:
-        file.write(alluri)
+        # print("alluri:\n" + alluri)
+        timenow = datetime.datetime.now().strftime("%Y-%m-%d")
+        if not os.path.exists("dmhy_txt"):
+            os.makedirs("dmhy_txt")
+        filename = os.path.join("dmhy_txt", "zimuzu_{}.txt".format(timenow))
+        print(filename)
+        with open(filename, 'a', encoding='utf-8') as file:
+            file.write(alluri)
+
+        sleep(15)
 
 
 output_uri()
