@@ -8,6 +8,7 @@ import re
 from config import load_config, save_config
 from collections import OrderedDict
 import datetime
+import os
 
 
 config_name = "zimuzu.conf"
@@ -109,7 +110,7 @@ def sign(account, password):
                 save_config(playlist, config_name)
 
     timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-    filename = "zimuzu_txt\\zimuzu_{}.txt".format(timenow)
+    filename = os.path.join("zimuzu_txt", "zimuzu_{}.txt".format(timenow))
     print(filename)
     with open(filename, 'a', encoding='utf-8') as file:
         file.write(alluri)
