@@ -7,6 +7,7 @@ from config import load_config, save_config
 from collections import OrderedDict
 import datetime
 import os
+from time import sleep
 
 config_name = "dmhy.conf"
 
@@ -26,8 +27,8 @@ def dmhy_find_url(play):
 
     while not findep:
         realurl = url + "/page/" + str(page)
-        print("realurl:" + realurl)
         res = requests.get(realurl, headers)
+        print("realurl:" + res.url)
         soup = BeautifulSoup(res.content, 'html.parser')
 
         lastpage = re.search("沒有可顯示資源", str(soup.text))
@@ -55,6 +56,8 @@ def dmhy_find_url(play):
                             seasons[s][ep] = uri
 
         page += 1
+        if not findep:
+            sleep(15)
 
     print("Got all episodes of {}".format(play['name']))
 
@@ -77,6 +80,7 @@ def output_uri():
     for play in playlist:
         alluri += dmhy_find_url(play)
         save_config(playlist, config_name)
+        sleep(15)
 
     # print("alluri:\n" + alluri)
     timenow = datetime.datetime.now().strftime("%Y-%m-%d")

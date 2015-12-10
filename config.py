@@ -164,7 +164,7 @@ if __name__ == "__main__":
     js_dict['name'] = "钻石王牌"
     js_dict['pattern'] = "(\\[钻石王牌\\]).*\\[(?P<ep>\d+)\\].*(\\[1080[pP]\\])"
     js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/288"
-    js_dict['episode'] = 25
+    js_dict['episode'] = 34
     file_dict.append(js_dict)
     save_config(file_dict, "dmhy.conf")
     # js_dict = load_config("zimuzu.conf")
