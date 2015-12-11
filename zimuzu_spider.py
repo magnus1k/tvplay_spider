@@ -10,6 +10,7 @@ from collections import OrderedDict
 import datetime
 import os
 import time
+from misc import get_url
 
 
 class Zimuzu_site:
@@ -58,10 +59,6 @@ class Zimuzu_site:
         Cookie = ' PHPSESSID='+session+'; '+CPS+(GINFO+GKEY)*3
         self.headers['Cookie'] = Cookie
 
-    def __get_url(self, url):
-        res = requests.get(url, headers=self.headers)
-        return res.content
-
     def __sort_plays(self, seasons):
         seasons = OrderedDict(sorted(seasons.items()))
         for season in seasons:
@@ -91,7 +88,7 @@ class Zimuzu_site:
         for play in playlist:
             alluri = ""
 
-            webpage = self.__get_url(play["url"])
+            webpage = get_url(play["url"],self.headers)
             seasons = self.__sort_plays(self.__get_play_from_webpage(webpage, play))
 
             for season in seasons:
