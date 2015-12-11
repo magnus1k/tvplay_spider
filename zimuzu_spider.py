@@ -6,10 +6,8 @@ import uuid
 import re
 from config import load_config, save_config
 from collections import OrderedDict
-import datetime
-import os
 import time
-from misc import get_url
+from misc import get_url, save_uri
 
 
 class ZimuzuSite:
@@ -81,7 +79,7 @@ class ZimuzuSite:
         for play in playlist:
             alluri = ""
 
-            webpage = get_url(play["url"],self.headers)
+            webpage = get_url(play["url"], self.headers)
             seasons = self.__sort_plays(self.__get_play_from_webpage(webpage, play))
 
             for season in seasons:
@@ -91,13 +89,7 @@ class ZimuzuSite:
                     play['season'] = season
                     play['episode'] = episode
 
-            timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-            userdir = os.path.join("users", user)
-            if not os.path.exists(userdir):
-                os.makedirs(userdir)
-            filename = os.path.join(userdir, "zimuzu_{}.txt".format(timenow))
-            with open(filename, 'a', encoding='utf-8') as file:
-                file.write(alluri)
+            if save_uri("zimuzu", alluri, user):
                 save_config(playlist, config_name)
 
             time.sleep(10)

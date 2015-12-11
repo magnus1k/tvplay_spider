@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import requests
 from bs4 import BeautifulSoup
 import re
 from config import load_config, save_config
-from collections import OrderedDict
-import datetime
-import os
 from time import sleep
+from misc import get_url, sort_plays, save_uri
 
 
 class DmhySite:
@@ -17,16 +14,6 @@ class DmhySite:
     def get_headers(self):
         user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
         self.headers = {'User-Agent': user_agent}
-
-    def get_url(self, url):
-        res = requests.get(url, self.headers)
-        return res.content
-
-    def sort_plays(self, seasons):
-        seasons = OrderedDict(sorted(seasons.items()))
-        for season in seasons:
-            seasons[season] = OrderedDict(sorted(seasons[season].items()))
-        return seasons
 
     @staticmethod
     def last_page(text):
@@ -44,7 +31,7 @@ class DmhySite:
 
         while not findep:
             realurl = "{}&page={}".format(play["url"], str(page))
-            webpage = self.get_url(realurl)
+            webpage = get_url(realurl, self.headers)
             soup = BeautifulSoup(webpage, 'html.parser')
 
             if DmhySite.last_page(str(soup.text)):
@@ -59,7 +46,7 @@ class DmhySite:
                             s = 1
                             if ep == play["episode"]:
                                 findep = True
-                                print("pagecount=ß" + str(page))
+                                print("pagecount=" + str(page))
                             elif ep > play["episode"]:
                                 # print("1080p:" + str(a.text).strip())
                                 # print("ep:" + str(ep))
@@ -85,7 +72,7 @@ class DmhySite:
             alluri = ""
             allname = ""
 
-            seasons = self.sort_plays(self.get_play_from_webpage(play))
+            seasons = sort_plays(self.get_play_from_webpage(play))
 
             for season in seasons:
                 for episode in seasons[season]:
@@ -95,19 +82,8 @@ class DmhySite:
                     # play['season'] = season
                     play['episode'] = episode
 
-            save_config(playlist, config_name)
-
-            timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-            userdir = os.path.join("users", user)
-            if not os.path.exists(userdir):
-                os.makedirs(userdir)
-            filename_link = os.path.join(userdir, "dmhy_link{}.txt".format(timenow))
-            filename_log = os.path.join(userdir, "dmhy_log{}.txt".format(timenow))
-            # print(filename_link)
-            with open(filename_link, 'a', encoding='utf-8') as file:
-                file.write(alluri)
-            with open(filename_log, 'a', encoding='utf-8') as file:
-                file.write(allname)
+            if save_uri("dmhy", alluri, user):
+                save_config(playlist, config_name)
 
             sleep(15)
 
