@@ -217,6 +217,6 @@ if __name__ == "__main__":
     js_dict['episode'] = 0
     file_dict.append(js_dict)
 
-    save_config(file_dict, os.path.join("users","magnus","dmhy.json"))
+    save_config(file_dict, os.path.join("users", "kinkin", "dmhy.json"))
     # js_dict = load_config("zimuzu.conf")
     # print(js_dict)
