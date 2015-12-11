@@ -17,6 +17,7 @@ def dmhy_find_url(play):
     headers = {'User-Agent': user_agent}
 
     alluri = ""
+    allname = ""
     page = 1
     findep = False
     seasons = dict()
@@ -64,28 +65,34 @@ def dmhy_find_url(play):
         for ep in seasons[s]:
             uri = seasons[s][ep]
             alluri += uri + "\n\r"
+            allname += str(play['name']) + str(play['episode']) + "\n\r"
             # play['season'] = season
             play['episode'] = ep
 
-    return alluri, play
+    return alluri, allname, play
 
 
 def output_uri():
     playlist = load_config(config_name)
     alluri = ""
+    allname = ""
     for play in playlist:
-        thisuri, play = dmhy_find_url(play)
+        thisuri, thisname, play = dmhy_find_url(play)
         alluri += thisuri
+        allname += thisname
         save_config(playlist, config_name)
 
         # print("alluri:\n" + alluri)
         timenow = datetime.datetime.now().strftime("%Y-%m-%d")
         if not os.path.exists("dmhy_txt"):
             os.makedirs("dmhy_txt")
-        filename = os.path.join("dmhy_txt", "zimuzu_{}.txt".format(timenow))
-        print(filename)
-        with open(filename, 'a', encoding='utf-8') as file:
+        filename_link = os.path.join("dmhy_txt", "dmhy_link{}.txt".format(timenow))
+        filename_log = os.path.join("dmhy_txt", "dmhy_log{}.txt".format(timenow))
+        print(filename_link)
+        with open(filename_link, 'a', encoding='utf-8') as file:
             file.write(alluri)
+        with open(filename_log, 'a', encoding='utf-8') as file:
+            file.write(allname)
 
         sleep(15)
 
