@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import os
 
 
 def load_config(filename):
@@ -150,7 +151,7 @@ if __name__ == "__main__":
     js_dict['episode'] = 0
     file_dict.append(js_dict)
 
-    save_config(file_dict, "zimuzu.json")
+    # save_config(file_dict, "zimuzu.json")
 
     file_dict = list()
     js_dict = dict()
@@ -216,6 +217,6 @@ if __name__ == "__main__":
     js_dict['episode'] = 0
     file_dict.append(js_dict)
 
-    save_config(file_dict, "dmhy.json")
+    save_config(file_dict, os.path.join("users","magnus","dmhy.json"))
     # js_dict = load_config("zimuzu.conf")
     # print(js_dict)

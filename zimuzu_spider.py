@@ -13,21 +13,22 @@ import time
 
 
 class Zimuzu_site:
-    def __init__(self, filename):
+    def __init__(self, filename=""):
         self.headers = dict()
-        account_file = load_config(filename)
-        self.account = account_file['account']
-        self.password = account_file['password']
+        if filename != "":
+            account_file = load_config(filename)
+            self.account = account_file['account']
+            self.password = account_file['password']
 
-    def __init__(self, account, password):
-        self.headers = dict()
-        self.account = account
-        self.password = self.password
+    # def __init__(self, account, password):
+    #     self.headers = dict()
+    #     self.account = account
+    #     self.password = self.password
+    #
+    # def __init__(self):
+    #     self.headers = dict()
 
-    def __init__(self):
-        self.headers = dict()
-
-    def __sign(account, password):
+    def __sign(self, account, password):
         print('Signing...')
         client_id = str(uuid.uuid1())
         self.headers = {'Accept': ' application/json, text/javascript, */*; q=0.01',
@@ -41,14 +42,14 @@ class Zimuzu_site:
                                  'Chrome/42.0.2311.90 Safari/537.36',
                    'Accept-Encoding': ' gzip, deflate, sdch',
                    'Accept-Language': ' zh-CN,zh;q=0.8'}
-        res_headers = requests.get('http://www.zimuzu.tv/user/login', headers=headers).headers
+        res_headers = requests.get('http://www.zimuzu.tv/user/login', headers=self.headers).headers
         session = res_headers['set-cookie'][10:36]
         self.headers['Cookie'] = 'PHPSESSID='+session+'; CNZZDATA1254180690=784053439-1449042469-%7C1449047872'
         data = {'account': account,
                 'password': password,
                 'remember': '1',
                 'url_back': 'http://www.zimuzu.tv/user/sign'}
-        res = requests.post('http://www.zimuzu.tv/User/Login/ajaxLogin', data=data, headers=headers)
+        res = requests.post('http://www.zimuzu.tv/User/Login/ajaxLogin', data=data, headers=self.headers)
         cookie = res.headers['set-cookie']
         cookie = cookie.replace('GINFO=deleted;', '').replace('GKEY=deleted;', '')
         GINFO = re.search('GINFO=uid[^;]+', cookie).group(0)+";"
@@ -57,18 +58,19 @@ class Zimuzu_site:
         Cookie = ' PHPSESSID='+session+'; '+CPS+(GINFO+GKEY)*3
         self.headers['Cookie'] = Cookie
 
-    def __get_url(url):
-        res = requests.get(play["url"], headers=headers)
+    def __get_url(self, url):
+        res = requests.get(url, headers=self.headers)
         return res.content
 
-    def __sort_plays(seasons):
+    def __sort_plays(self, seasons):
         seasons = OrderedDict(sorted(seasons.items()))
         for season in seasons:
             seasons[season] = OrderedDict(sorted(seasons[season].items()))
         return seasons
 
-    def __get_play_from_webpage(webpage):
+    def __get_play_from_webpage(self, webpage, play):
         soup = BeautifulSoup(webpage, 'html.parser')
+        seasons = dict()
         for one in soup.find_all('li', format='HR-HDTV'):
             season = int(one['season'])
             episode = int(one['episode'])
@@ -82,15 +84,15 @@ class Zimuzu_site:
         print("Got all episodes of {}".format(play['name']))
         return seasons
 
-    def get_plays(config_name, user)
-        __sign(self.account, self.password)
+    def get_plays(self, config_name, user):
+        if self.account != "" and self.password != "":
+            self.__sign(self.account, self.password)
         playlist = load_config(config_name)
         for play in playlist:
             alluri = ""
-            seasons = dict()
-            webpage = __get_url(play["url"])
 
-            seasons = __sort_plays(__get_play_from_webpage(webpage))
+            webpage = self.__get_url(play["url"])
+            seasons = self.__sort_plays(self.__get_play_from_webpage(webpage, play))
 
             for season in seasons:
                 for episode in seasons[season]:
