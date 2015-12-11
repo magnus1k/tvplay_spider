@@ -16,18 +16,12 @@ from misc import get_url
 class Zimuzu_site:
     def __init__(self, filename=""):
         self.headers = dict()
+        self.account = ""
+        self.password = ""
         if filename != "":
             account_file = load_config(filename)
             self.account = account_file['account']
             self.password = account_file['password']
-
-    # def __init__(self, account, password):
-    #     self.headers = dict()
-    #     self.account = account
-    #     self.password = self.password
-    #
-    # def __init__(self):
-    #     self.headers = dict()
 
     def __sign(self, account, password):
         print('Signing...')

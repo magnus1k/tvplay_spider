@@ -151,7 +151,7 @@ if __name__ == "__main__":
     js_dict['episode'] = 0
     file_dict.append(js_dict)
 
-    # save_config(file_dict, "zimuzu.json")
+    save_config(file_dict, os.path.join("users","magnus","zimuzu.json"))
 
     file_dict = list()
     js_dict = dict()
