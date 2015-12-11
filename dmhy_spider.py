@@ -23,12 +23,12 @@ def dmhy_find_url(play):
     seasons = dict()
 
     while not findep:
-        realurl = play["url"] + "/page/" + str(page)
+        realurl = "{}&page={}".format(play["url"], str(page))
+        print("realurl:" + realurl)
         res = requests.get(realurl, headers)
-        # print("realurl:" + res.url)
         soup = BeautifulSoup(res.content, 'html.parser')
 
-        lastpage = re.search("沒有可顯示資源", str(soup.text))
+        lastpage = re.search("服务器遇到错误|沒有可顯示資源", str(soup.text))
         if lastpage:
             break
 
@@ -65,7 +65,7 @@ def dmhy_find_url(play):
         for ep in seasons[s]:
             uri = seasons[s][ep]
             alluri += uri + "\n\r"
-            allname += str(play['name']) + str(play['episode']) + "\n\r"
+            allname += str(play['name']) + " ep:" + str(ep) + "\n\r"
             # play['season'] = season
             play['episode'] = ep
 
