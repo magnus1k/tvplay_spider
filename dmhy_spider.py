@@ -9,7 +9,7 @@ import datetime
 import os
 from time import sleep
 
-config_name = "dmhy.conf"
+config_name = "dmhy.json"
 
 
 def dmhy_find_url(play):
@@ -98,5 +98,3 @@ def output_uri():
 
 
 output_uri()
-
-

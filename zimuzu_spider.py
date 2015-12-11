@@ -12,15 +12,22 @@ import os
 import time
 
 
-config_name = "zimuzu.conf"
-
-
 class Zimuzu_site:
+    def __init__(self, filename):
+        self.headers = dict()
+        account_file = load_config(filename)
+        self.account = account_file['account']
+        self.password = account_file['password']
+
     def __init__(self, account, password):
         self.headers = dict()
-        sign(account, password)
+        self.account = account
+        self.password = self.password
 
-    def sign(account, password):
+    def __init__(self):
+        self.headers = dict()
+
+    def __sign(account, password):
         print('Signing...')
         client_id = str(uuid.uuid1())
         self.headers = {'Accept': ' application/json, text/javascript, */*; q=0.01',
@@ -50,55 +57,55 @@ class Zimuzu_site:
         Cookie = ' PHPSESSID='+session+'; '+CPS+(GINFO+GKEY)*3
         self.headers['Cookie'] = Cookie
 
-    def get_url(url):
+    def __get_url(url):
         res = requests.get(play["url"], headers=headers)
         return res.content
 
-def sort_plays(seasons):
-    seasons = OrderedDict(sorted(seasons.items()))
-    for season in seasons:
-        seasons[season] = OrderedDict(sorted(seasons[season].items()))
-    return seasons
-
-def get_play_from_webpage(webpage):
-    soup = BeautifulSoup(webpage, 'html.parser')
-    for one in soup.find_all('li', format='HR-HDTV'):
-        season = int(one['season'])
-        episode = int(one['episode'])
-        if (season == play['season'] and episode > play['episode']) or \
-                (season > play['season'] and episode != 0 and season < 100):
-            link = one.find('a', href=re.compile('ed2k:'))
-            uri = str(link['href'])
-            if season not in seasons:
-                seasons[season] = dict()
-            seasons[season][episode] = uri
-    print("Got all episodes of {}".format(play['name']))
-    return seasons
-
-def get_plays(account, password)
-    site = Zimuzu_site(account,password)
-    playlist = load_config(config_name)
-    for play in playlist:
-        alluri = ""
-        seasons = dict()
-        webpage = site.get_url(play["url"])
-
-        seasons = sort_plays(get_play_from_webpage(webpage))
-
+    def __sort_plays(seasons):
+        seasons = OrderedDict(sorted(seasons.items()))
         for season in seasons:
-            for episode in seasons[season]:
-                uri = seasons[season][episode]
-                alluri += uri + "\n\r"
-                play['season'] = season
-                play['episode'] = episode
+            seasons[season] = OrderedDict(sorted(seasons[season].items()))
+        return seasons
 
-        timenow = datetime.datetime.now().strftime("%Y-%m-%d")
-        if not os.path.exists("zimuzu_txt"):
-            os.makedirs("zimuzu_txt")
-        filename = os.path.join("zimuzu_txt", "zimuzu_{}.txt".format(timenow))
-        print(filename)
-        with open(filename, 'a', encoding='utf-8') as file:
-            file.write(alluri)
-            save_config(playlist, config_name)
+    def __get_play_from_webpage(webpage):
+        soup = BeautifulSoup(webpage, 'html.parser')
+        for one in soup.find_all('li', format='HR-HDTV'):
+            season = int(one['season'])
+            episode = int(one['episode'])
+            if (season == play['season'] and episode > play['episode']) or \
+                    (season > play['season'] and episode != 0 and season < 100):
+                link = one.find('a', href=re.compile('ed2k:'))
+                uri = str(link['href'])
+                if season not in seasons:
+                    seasons[season] = dict()
+                seasons[season][episode] = uri
+        print("Got all episodes of {}".format(play['name']))
+        return seasons
 
-        time.sleep(10)
+    def get_plays(config_name, user)
+        __sign(self.account, self.password)
+        playlist = load_config(config_name)
+        for play in playlist:
+            alluri = ""
+            seasons = dict()
+            webpage = __get_url(play["url"])
+
+            seasons = __sort_plays(__get_play_from_webpage(webpage))
+
+            for season in seasons:
+                for episode in seasons[season]:
+                    uri = seasons[season][episode]
+                    alluri += uri + "\n\r"
+                    play['season'] = season
+                    play['episode'] = episode
+
+            timenow = datetime.datetime.now().strftime("%Y-%m-%d")
+            userdir = os.path.join("users", user)
+            if not os.path.exists(userdir):
+                os.makedirs(userdir)
+            filename = os.path.join(userdir, "zimuzu_{}.txt".format(timenow))
+            with open(filename, 'a', encoding='utf-8') as file:
+                file.write(alluri)
+                save_config(playlist, config_name)
+
+            time.sleep(10)
