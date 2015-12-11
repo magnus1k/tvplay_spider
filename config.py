@@ -153,19 +153,41 @@ if __name__ == "__main__":
     save_config(file_dict, "zimuzu.conf")
 
     file_dict = list()
+    # js_dict = dict()
+    # js_dict['name'] = "名侦探柯南"
+    # js_dict['pattern'] = "(名侦探柯南\\s)(?P<ep>\d+).*(\\[1080[pP]\\])"
+    # js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/75"
+    # js_dict['episode'] = 781
+    # file_dict.append(js_dict)
+    #
+    # js_dict = dict()
+    # js_dict['name'] = "钻石王牌"
+    # js_dict['pattern'] = "(\\[钻石王牌\\]).*\\[(?P<ep>\d+)\\].*(\\[1080[pP]\\])"
+    # js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/288"
+    # js_dict['episode'] = 34
+    # file_dict.append(js_dict)
+    #
+    # js_dict = dict()
+    # js_dict['name'] = "海贼王"
+    # js_dict['pattern'] = "(\\[ONE PIECE 海贼王\\]).*\\[第(?P<ep>\d+)话\\].*(\\[1080[pP]\\])"
+    # js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/34"
+    # js_dict['episode'] = 680
+    # file_dict.append(js_dict)
+    #
+    # js_dict = dict()
+    # js_dict['name'] = "银魂"
+    # js_dict['pattern'] = "(\\[银魂\\]).*\\[(?P<ep>\d+)\\].*(\\[1080[pP].*\\])"
+    # js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/117"
+    # js_dict['episode'] = 289
+    # file_dict.append(js_dict)
+    #
     js_dict = dict()
-    js_dict['name'] = "名侦探柯南"
-    js_dict['pattern'] = "(名侦探柯南\\s)(?P<ep>\d+).*(\\[1080[pP]\\])"
-    js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/75"
-    js_dict['episode'] = 781
+    js_dict['name'] = "排球少年"
+    js_dict['pattern'] = "(排球少年!!第二季).*\\[(?P<ep>\d+)\\].*(\\[1080[pP].*\\])"
+    js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/288"
+    js_dict['episode'] = 0
     file_dict.append(js_dict)
 
-    js_dict = dict()
-    js_dict['name'] = "钻石王牌"
-    js_dict['pattern'] = "(\\[钻石王牌\\]).*\\[(?P<ep>\d+)\\].*(\\[1080[pP]\\])"
-    js_dict['url'] = "https://share.dmhy.org/topics/list/team_id/288"
-    js_dict['episode'] = 34
-    file_dict.append(js_dict)
     save_config(file_dict, "dmhy.conf")
     # js_dict = load_config("zimuzu.conf")
     # print(js_dict)
