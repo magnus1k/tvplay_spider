@@ -6,7 +6,7 @@ import datetime
 import os
 
 
-def get_url(url, headers=dict(), retries=10):
+def get_url(url, headers, retries=10):
     try:
         res = requests.get(url, headers=headers)
     except Exception as what:
@@ -35,7 +35,4 @@ def save_uri(filekeyword, alluri, user):
     filename = os.path.join(userdir, "{}_{}.txt".format(filekeyword, timenow))
     with open(filename, 'a', encoding='utf-8') as file:
         file.write(alluri)
-        return True
-
-    return False
 

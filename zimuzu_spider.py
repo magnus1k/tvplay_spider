@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import uuid
 import re
 from config import load_config, save_config
-from collections import OrderedDict
 import time
 from misc import get_url, sort_plays, save_uri
 
@@ -83,7 +82,8 @@ class ZimuzuSite:
                     play['season'] = season
                     play['episode'] = episode
 
-            if save_uri("zimuzu", alluri, user):
-                save_config(playlist, config_name)
+            save_uri("zimuzu", alluri, user)
+            save_config(playlist, config_name)
 
             time.sleep(10)
+
