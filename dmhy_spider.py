@@ -82,8 +82,8 @@ class DmhySite:
                     # play['season'] = season
                     play['episode'] = episode
 
-            if save_uri("dmhy", alluri, user):
-                save_config(playlist, config_name)
+            save_uri("dmhy", alluri, user)
+            save_config(playlist, config_name)
 
             sleep(15)
 
