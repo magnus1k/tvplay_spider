@@ -43,13 +43,14 @@ class ZimuzuSite:
         res = requests.post('http://www.zimuzu.tv/User/Login/ajaxLogin', data=data, headers=self.headers)
         cookie = res.headers['set-cookie']
         cookie = cookie.replace('GINFO=deleted;', '').replace('GKEY=deleted;', '')
-        GINFO = re.search('GINFO=uid[^;]+', cookie).group(0)+";"
-        GKEY = re.search('GKEY=[^;]+', cookie).group(0)+";"
-        CPS = 'yhd%2F'+str(int(time.time()))+";"
-        Cookie = ' PHPSESSID='+session+'; '+CPS+(GINFO+GKEY)*3
-        self.headers['Cookie'] = Cookie
+        ginfo = re.search('GINFO=uid[^;]+', cookie).group(0)+";"
+        gkey = re.search('GKEY=[^;]+', cookie).group(0)+";"
+        cps = 'yhd%2F'+str(int(time.time()))+";"
+        cookie = ' PHPSESSID='+session+'; '+cps+(ginfo+gkey)*3
+        self.headers['Cookie'] = cookie
 
-    def __get_play_from_webpage(self, webpage, play):
+    @staticmethod
+    def __get_play_from_webpage(webpage, play):
         soup = BeautifulSoup(webpage, 'html.parser')
         seasons = dict()
         for one in soup.find_all('li', format='HR-HDTV'):
@@ -72,7 +73,7 @@ class ZimuzuSite:
         for play in playlist:
             alluri = ""
 
-            webpage = get_url(play["url"],self.headers)
+            webpage = get_url(play["url"], self.headers)
             seasons = sort_plays(self.__get_play_from_webpage(webpage, play))
 
             for season in seasons:
